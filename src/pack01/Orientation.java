@@ -7,7 +7,9 @@ public enum Orientation {
 	
 	public void testDepacement(int maxPos, int nextPos) throws OverBoundsException
 	{
-		if(maxPos < nextPos || nextPos < 0) throw new OverBoundsException();	
+		if(maxPos < nextPos || nextPos < 0) 
+			throw new OverBoundsException("Tentative de deplacement vers : "+
+					nextPos+" Max = " + maxPos);	
 	}
 	
 	public void changePosition(Robot r) throws OverBoundsException {

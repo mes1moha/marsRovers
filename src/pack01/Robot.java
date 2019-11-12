@@ -10,14 +10,16 @@ public class Robot {
 	private Orientation orientation;
 	private Plateau platToExplor;
 	
-	public Robot(Point2D position, String orientation) {
+	public Robot() {
 		super();
-		this.position = position;
-		this.orientation = Orientation.valueOf(orientation);
 	}
 
 	public Point2D getPosition() {
 		return position;
+	}
+
+	public Orientation getOrientation() {
+		return orientation;
 	}
 
 	public void setPosition(Point2D position) {
@@ -33,7 +35,7 @@ public class Robot {
 	}
 
 	public void doM() throws OverBoundsException{
-		orientation.changePosition(this);
+		this.orientation.changePosition(this);
 	}
 	
 	public void doL() {
@@ -50,6 +52,7 @@ public class Robot {
 	{
 		List<Deplacement> tabDeplacement = ordre.getSuiteDeplacements();
 		this.position = ordre.getPtInit();
+		this.orientation = ordre.getOrientationDepart();
 		
 		for (Deplacement deplacement : tabDeplacement) {
 			deplacement.seDeplacer(this);

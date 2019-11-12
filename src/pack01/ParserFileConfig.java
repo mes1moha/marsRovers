@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import pack01.exception.LectureConfigPlatequException;
+import pack01.exception.LectureDeplacementException;
+import pack01.exception.LectureOrientationException;
+import pack01.exception.LecturePtDepartException;
+
 public class ParserFileConfig {
 	private File fileInputConfig;
 	private Scanner scFileConfig;
@@ -18,7 +23,11 @@ public class ParserFileConfig {
 		scFileConfig = new Scanner(fileInputConfig);
 	}
 	
-	public Deplacement charToDeplacement(char carDep) {
+	public void closeScanner() {
+		this.scFileConfig.close();
+	}
+	
+	public static Deplacement charToDeplacement(char carDep) {
 		Deplacement dep = null;
 			switch (carDep) {
 			case 'M':
@@ -31,16 +40,16 @@ public class ParserFileConfig {
 		return dep;
 	}
 	
-	public Plateau getPlateau() throws Exception {
-		Plateau plateau ;
+	public Plateau getPlateau() throws LectureConfigPlatequException {
 		try {
 			return new Plateau( scFileConfig.nextInt(), scFileConfig.nextInt() );
 		} catch (InputMismatchException e) {
-			throw new Exception("Erreur de lecture des informations du plateau");
+			throw new LectureConfigPlatequException("Erreur de lecture des "
+					+ "informations du plateau");
 		}
 	}
 	
-	public Point2D getPointDepart() throws Exception {
+	public Point2D getPointDepart() throws LecturePtDepartException {
 		Point2D ptInit = null;
 		int x, y;
 		try {
@@ -48,23 +57,25 @@ public class ParserFileConfig {
 			y = scFileConfig.nextInt();
 			ptInit = new Point2D(x,y);
 		} catch (InputMismatchException e) {
-			throw new Exception("Erreur de lecture des coordonnées de départ");
+			throw new LecturePtDepartException("Erreur de lecture des "
+					+ "coordonnées de départ");
 		}
 		return ptInit;
 	}
 	
 	
-	public Orientation getOrientation() throws Exception {
+	public Orientation getOrientation() throws LectureOrientationException {
 		try {
 			String matchedOrientation = this.scFileConfig.next("[NESO]{1}");
 			return Orientation.valueOf(matchedOrientation);
 		} catch (NoSuchElementException e) {
-			throw new Exception("getOrientation : Impossible de récuperer l'orientation");
+			throw new LectureOrientationException("getOrientation : Impossible"
+					+ " de récuperer l'orientation");
 		}
 		
 	}
 	
-	public List<Deplacement> getDeplacements() throws Exception
+	public List<Deplacement> getDeplacements() throws LectureDeplacementException
 	{
 		List<Deplacement> lstDep = new ArrayList<>();
 		try {
@@ -78,12 +89,14 @@ public class ParserFileConfig {
 					lstDep.add(charToDeplacement(deplacements[i]));
 			}
 		} catch (NoSuchElementException e) {
-			throw new Exception("getOrientation : Impossible de récuperer l'ensemble des deplacements. Deplacement Inconnue");
+			throw new LectureDeplacementException("getDeplacements : Impossible "
+					+ "de récuperer l'ensemble des deplacements. "
+					+ "Deplacement Inconnue : "+ scFileConfig.next());
 		}		
 		return lstDep;
 	}
 	
-	public List<Ordre> getListOrder() throws Exception {
+	public List<Ordre> getListOrder() throws LecturePtDepartException, LectureOrientationException, LectureDeplacementException  {
 		List<Ordre> lstOrdre= new ArrayList<Ordre>();
 		Ordre tmpOrdre;
 		while(scFileConfig.hasNext())
